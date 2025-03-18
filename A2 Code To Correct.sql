@@ -44,7 +44,7 @@ BEGIN
                  first_name = DECODE(r_gggs.column3, k_no_change_char, first_name, r_gggs.column3),
                  last_name = DECODE(r_gggs.column4, k_no_change_char, last_name, r_gggs.column4),
                  city = DECODE(r_gggs.column5, k_no_change_char, city, r_gggs.column5),
-                 phone_number = NVL(r_gggs.column6, r_gggs.column6, phone_number)
+                 phone_number = NVL(r_gggs.column6, phone_number)
            WHERE name = r_gggs.column1;  
    	    ELSE 
 	      RAISE_APPLICATION_ERROR(-20001, r_gggs.process_type || ' is not a valid process request for ' || r_gggs.data_type || ' data');
@@ -57,7 +57,7 @@ BEGIN
           VALUES (gggs_vendor_seq.NEXTVAL, r_gggs.column1, r_gggs.column2, r_gggs.column3,
                   r_gggs.column4, r_gggs.column6, k_status);      
                 
-        ELSIF (r_gggs.process_type = k_stats) THEN
+        ELSIF (r_gggs.process_type = k_status) THEN
           UPDATE gggs_vendor
              SET status = r_gggs.column2
            WHERE name = r_gggs.column1;    
@@ -68,7 +68,7 @@ BEGIN
                  contact_first_name = DECODE(r_gggs.column3, k_no_change_char, contact_first_name, r_gggs.column3),
                  contact_last_name = DECODE(r_gggs.column4, k_no_change_char, contact_last_name, r_gggs.column4),
                  contact_phone_number = NVL2(r_gggs.column6, r_gggs.column6, contact_phone_number)
-           WHERE name = r_gggs.column1  
+           WHERE name = r_gggs.column1;
         ELSE 
 	      RAISE_APPLICATION_ERROR(-20001, r_gggs.process_type || ' is not a valid process request for ' || r_gggs.data_type || ' data');
         END IF;
@@ -109,7 +109,7 @@ BEGIN
              SET status = r_gggs.column2
            WHERE name = r_gggs.column1;
       
-        ELSE IF (r_gggs.process_type = k_change) THEN
+        ELSIF (r_gggs.process_type = k_change) THEN
           UPDATE gggs_stock
              SET description = DECODE(r_gggs.column4, k_no_change_char, description, r_gggs.column4),
                  price = NVL2(r_gggs.column7, r_gggs.column7, price),
@@ -126,6 +126,7 @@ BEGIN
 	     SET data_processed = k_data_processed
 	   WHERE loadID = r_gggs.loadID;
 	 
+        
 	  COMMIT;
 	
     EXCEPTION 
@@ -135,14 +136,12 @@ BEGIN
         v_message := SQLERRM;
 
         INSERT INTO  gggs_error_log_table
-        VALUES 
+        VALUES                                                              
          (r_gggs.data_type, r_gggs.process_type, v_message);
 	   
 	    COMMIT; 
 
-	   
-  END LOOP;  
-
+        END;
+    END LOOP;
 END;
 /
-  
