@@ -44,7 +44,7 @@ BEGIN
                  first_name = DECODE(r_gggs.column3, k_no_change_char, first_name, r_gggs.column3),
                  last_name = DECODE(r_gggs.column4, k_no_change_char, last_name, r_gggs.column4),
                  city = DECODE(r_gggs.column5, k_no_change_char, city, r_gggs.column5),
-                 phone_number = NVL(r_gggs.column6, phone_number) -- FIX: changed to two arguments only since NVL accepts two arguments only
+                 phone_number = NVL(r_gggs.column6, phone_number) -- SYNTAX FIX: changed to two arguments only since NVL accepts two arguments only
            WHERE name = r_gggs.column1;  
    	    ELSE 
 	      RAISE_APPLICATION_ERROR(-20001, r_gggs.process_type || ' is not a valid process request for ' || r_gggs.data_type || ' data');
@@ -57,7 +57,7 @@ BEGIN
           VALUES (gggs_vendor_seq.NEXTVAL, r_gggs.column1, r_gggs.column2, r_gggs.column3,
                   r_gggs.column4, r_gggs.column6, k_status);      
 
-        ELSIF (r_gggs.process_type = k_status) THEN -- FIX: updated k_stats to k_status
+        ELSIF (r_gggs.process_type = k_status) THEN -- SYNTAX FIX: updated k_stats to k_status
           UPDATE gggs_vendor
              SET status = r_gggs.column2
            WHERE name = r_gggs.column1;    
@@ -94,12 +94,12 @@ BEGIN
             INTO v_name1
             FROM gggs_category
            WHERE name = r_gggs.column1;
-         
+ 
           SELECT vendorID
             INTO v_name2
             FROM gggs_vendor
-           WHERE name = r_gggs.column3;     
-      
+           WHERE name = r_gggs.column2;   -- LOGICAL FIX: changed r_gggs.column3 to r_ggg.column2
+
           INSERT INTO gggs_stock
           VALUES (gggs_stock_seq.NEXTVAL, v_name1, v_name2, r_gggs.column3,
                   r_gggs.column4, r_gggs.column7, r_gggs.column8, k_active_status);
@@ -110,7 +110,7 @@ BEGIN
            WHERE name = r_gggs.column1;
     
        
-        ELSIF (r_gggs.process_type = k_change) THEN    -- FIX: Changed from Else If to ElsIf as this caused Line 121 to get an error
+        ELSIF (r_gggs.process_type = k_change) THEN    -- SYNTAX FIX: Changed from Else If to ElsIf as this caused Line 121 to get an error
           UPDATE gggs_stock
              SET description = DECODE(r_gggs.column4, k_no_change_char, description, r_gggs.column4),
                  price = NVL2(r_gggs.column7, r_gggs.column7, price),
@@ -139,7 +139,7 @@ BEGIN
          (r_gggs.data_type, r_gggs.process_type, v_message);
 	   
 	    COMMIT; 
-    END; -- FIX: This END should close the EXCEPTION block before END LOOP
+    END; -- SYNTAX FIX: This END should close the EXCEPTION block before END LOOP
 
 	   
     END LOOP;  
