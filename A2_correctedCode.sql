@@ -114,7 +114,7 @@ BEGIN
           UPDATE gggs_stock
              SET description = DECODE(r_gggs.column4, k_no_change_char, description, r_gggs.column4),
                  price = NVL2(r_gggs.column7, r_gggs.column7, price),
-                 no_in_stock = NVL2(r_gggs.column8, (no_in_stock - r_gggs.column8), no_in_stock)
+                 no_in_stock = NVL2(r_gggs.column8, (no_in_stock + r_gggs.column8), no_in_stock) --LOGICAL FIX: change from substraction to addition
            WHERE name = r_gggs.column1;
         ELSE 
 	      RAISE_APPLICATION_ERROR(-20001, r_gggs.data_type || ' is not a valid process request for ' || r_gggs.process_type || ' data');
