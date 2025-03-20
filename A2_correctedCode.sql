@@ -55,7 +55,7 @@ BEGIN
         IF (r_gggs.process_type = k_new) THEN
           INSERT INTO gggs_vendor
           VALUES (gggs_vendor_seq.NEXTVAL, r_gggs.column1, r_gggs.column2, r_gggs.column3,
-                  r_gggs.column4, r_gggs.column6, k_status);      
+                  r_gggs.column4, r_gggs.column6, k_active_status);  // LOGIC ERROR // changed k_status to k_active_status   
 
         ELSIF (r_gggs.process_type = k_status) THEN -- SYNTAX FIX: updated k_stats to k_status
           UPDATE gggs_vendor
