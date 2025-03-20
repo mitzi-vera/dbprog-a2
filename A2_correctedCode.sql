@@ -55,7 +55,7 @@ BEGIN
         IF (r_gggs.process_type = k_new) THEN
           INSERT INTO gggs_vendor
           VALUES (gggs_vendor_seq.NEXTVAL, r_gggs.column1, r_gggs.column2, r_gggs.column3,
-                  r_gggs.column4, r_gggs.column6, k_active_status);  // LOGIC ERROR // changed k_status to k_active_status   
+                  r_gggs.column4, r_gggs.column6, k_active_status);  -- LOGIC ERROR  changed k_status to k_active_status   
 
         ELSIF (r_gggs.process_type = k_status) THEN -- SYNTAX FIX: updated k_stats to k_status
           UPDATE gggs_vendor
@@ -117,7 +117,7 @@ BEGIN
                  no_in_stock = NVL2(r_gggs.column8, (no_in_stock + r_gggs.column8), no_in_stock) --LOGICAL FIX: change from substraction to addition
            WHERE name = r_gggs.column1;
         ELSE 
-	      RAISE_APPLICATION_ERROR(-20001, r_gggs.process_type || ' is not a valid process request for ' || r_gggs.data_type || ' data');  -- LOGICAL Fix : changed r_gggs.data_type to r_gggs.process_type
+	      RAISE_APPLICATION_ERROR(-20001, r_gggs.data_type || ' is not a valid process request for ' || r_gggs.process_type || ' data'); 
         END IF;        
 	  ELSE 
 	    RAISE_APPLICATION_ERROR(-20000, r_gggs.data_type || ' is not a valid type of data to process');
