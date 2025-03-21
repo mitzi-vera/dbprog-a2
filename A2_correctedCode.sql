@@ -94,19 +94,19 @@ BEGIN
       ELSIF (r_gggs.data_type = k_stock) THEN
         IF (r_gggs.process_type = k_new) THEN
         
-        DECLARE
-          v_count NUMBER; 
-        BEGIN
+        DECLARE  -- LOGICAL FIX 5: added this declare to set a local variable
+          v_stock_count NUMBER; 
+        BEGIN  -- LOGICAL FIX 5: to check the stock if it already exists in the table
             SELECT COUNT(*)
-            INTO v_count
+            INTO v_stock_count
             FROM gggs_stock gs
             JOIN gggs_category gc ON gs.categoryID = gc.categoryID
             JOIN gggs_vendor gv ON gs.supplierID = gv.vendorID
             WHERE gc.name = r_gggs.column1
               AND gv.name = r_gggs.column2
               AND gs.name = r_gggs.column3;
-
-            IF v_count = 0 THEN
+                -- LOGICAL FIX 5: If not exist insert the new stock.
+            IF v_stock_count = 0 THEN
 
                 SELECT categoryID
                 INTO v_name1
@@ -116,7 +116,7 @@ BEGIN
                 SELECT vendorID
                 INTO v_name2
                 FROM gggs_vendor
-                WHERE name = r_gggs.column2; -- LOGICAL FIX: changed r_gggs.column3 to r_gggs.column2
+                WHERE name = r_gggs.column2; -- LOGICAL FIX 1: changed r_gggs.column3 to r_gggs.column2
 
                 INSERT INTO gggs_stock
                 VALUES (gggs_stock_seq.NEXTVAL, v_name1, v_name2, r_gggs.column3,
