@@ -92,7 +92,6 @@ BEGIN
         END IF;
 
       ELSIF (r_gggs.data_type = k_stock) THEN
-
         IF (r_gggs.process_type = k_new) THEN
           SELECT categoryID
             INTO v_name1
@@ -103,20 +102,10 @@ BEGIN
             INTO v_name2
             FROM gggs_vendor
            WHERE name = r_gggs.column2;   -- LOGICAL FIX: changed r_gggs.column3 to r_gggs.column2
-
-          BEGIN
+           
             INSERT INTO gggs_stock
             VALUES (gggs_stock_seq.NEXTVAL, v_name1, v_name2, r_gggs.column3,
                     r_gggs.column4, r_gggs.column7, r_gggs.column8, k_active_status);
-          EXCEPTION -- ADDITIONAL FIX TO ERROR LOGS DUE TO MULTIPLE ERRORS.
-            WHEN DUP_VAL_ON_INDEX THEN
-              -- Handle duplicate by updating the existing record
-              UPDATE gggs_stock
-              SET description = r_gggs.column4,
-                  price = r_gggs.column7,
-                  no_in_stock = r_gggs.column8
-              WHERE name = r_gggs.column3;
-          END;
 
         ELSIF (r_gggs.process_type = k_status) THEN
           UPDATE gggs_stock
