@@ -103,13 +103,10 @@ BEGIN
            DBMS_OUTPUT.PUT_LINE('Next StockID: ' || gggs_stock_seq.NEXTVAL);
 
           INSERT INTO gggs_stock
---          VALUES (gggs_stock_seq.NEXTVAL, v_name1, v_name2, r_gggs.column3,
---                  r_gggs.column4, r_gggs.column7, r_gggs.column8, k_active_status);
             VALUES (
                 (SELECT NVL(MAX(stockID), 0) + 1 FROM gggs_stock),  -- Logical Fix: Assign next available StockID
                 v_name1, v_name2, r_gggs.column3, r_gggs.column4, r_gggs.column7, r_gggs.column8, k_active_status
-                );
-                
+                );    
         ELSIF (r_gggs.process_type = k_status) THEN
           UPDATE gggs_stock
              SET status = r_gggs.column2
